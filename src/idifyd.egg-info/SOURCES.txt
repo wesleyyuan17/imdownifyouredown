@@ -1,7 +1,0 @@
-setup.py
-backend/__init__.py
-idifyd.egg-info/PKG-INFO
-idifyd.egg-info/SOURCES.txt
-idifyd.egg-info/dependency_links.txt
-idifyd.egg-info/requires.txt
-idifyd.egg-info/top_level.txt

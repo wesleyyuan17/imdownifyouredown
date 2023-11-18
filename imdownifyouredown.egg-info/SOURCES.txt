@@ -1,0 +1,7 @@
+README.md
+setup.py
+imdownifyouredown.egg-info/PKG-INFO
+imdownifyouredown.egg-info/SOURCES.txt
+imdownifyouredown.egg-info/dependency_links.txt
+imdownifyouredown.egg-info/requires.txt
+imdownifyouredown.egg-info/top_level.txt
