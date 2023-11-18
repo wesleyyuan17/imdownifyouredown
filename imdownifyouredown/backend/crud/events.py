@@ -1,70 +1,70 @@
-from imdownifyouredown.backend.crud.util import get_conn
+from imdownifyouredown.backend.crud.util import Event, User, get_conn
 
 DEFAULT_DB_NAME = "test"
 DEFAULT_TABLE_NAME = "Events"
 
 
 def get_event(
-    event_id: str,
+    event: Event,
     db_name: str | None = None,
     table_name: str | None = None
-):
-    conn = get_conn(db_name)
-
+) -> list:
     if db_name is None:
         db_name = DEFAULT_DB_NAME
     if table_name is None:
         table_name = DEFAULT_TABLE_NAME
+
+    conn = get_conn(db_name)
     
     return conn.execute(
         "SELECT * FROM {} WHERE eventid = {}".format(
             table_name,
-            event_id
+            event.event_id
         )
     ).fetchall()
 
 
 def get_user_events(
-    user_id: str,
+    user: User,
     db_name: str | None = None,
     table_name: str | None = None
-):
-    conn = get_conn(db_name)
-
+) -> list:
     if db_name is None:
         db_name = DEFAULT_DB_NAME
     if table_name is None:
         table_name = DEFAULT_TABLE_NAME
+
+    conn = get_conn(db_name)
     
     return conn.execute(
         "SELECT * FROM {} WHERE userid = {}".format(
             table_name,
-            user_id
+            user.user_id
         )
     ).fetchall()
 
 
 def insert_event(
-    event_id: str,
-    event_params: dict[str, str],
+    event: Event,
     db_name: str | None = None,
     table_name: str | None = None
-):
-    conn = get_conn(db_name)
-
+) -> None:
     if db_name is None:
         db_name = DEFAULT_DB_NAME
     if table_name is None:
         table_name = DEFAULT_TABLE_NAME
+
+    conn = get_conn(db_name)
     
     sql = "INSERT INTO {} VALUES".format(table_name)
-    for uid in event_params["user_ids"]:
+    for user in event.users:
         sql += "\n({}, {}, {}, {})".format(
-            event_id,
-            uid,
-            event_params.get("eventname", None),
+            event.event_id,
+            user.user_id,
+            event.event_name,
             True
         )
         sql += ","
 
     conn.execute(sql)
+    conn.commit()

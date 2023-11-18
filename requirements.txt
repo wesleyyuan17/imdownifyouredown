@@ -1,2 +1,5 @@
 fastapi
+<<<<<<< HEAD
 pysqlite3
+=======
+>>>>>>> 9c5bfad (fixed setup and tests)
