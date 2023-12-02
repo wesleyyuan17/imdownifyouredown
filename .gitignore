@@ -8,4 +8,4 @@ dist/
 !/.gitignore
 # !/.venv
 
-*.egg-info/
+*.db
