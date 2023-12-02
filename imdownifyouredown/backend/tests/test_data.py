@@ -9,6 +9,7 @@ if __name__ == "__main__":
     file_dir = os.path.dirname(__file__)
     test_db_path = os.path.join(os.path.dirname(file_dir), "data", "test.db")
     conn = sqlite3.connect(test_db_path)
+    conn.execute("DROP TABLE IF EXISTS Events")
     conn.execute("CREATE TABLE IF NOT EXISTS Events(eventid, userid, eventname, down)")
     conn.execute(
         """
