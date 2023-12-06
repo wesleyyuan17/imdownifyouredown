@@ -82,3 +82,31 @@ def insert_event(
 
     conn.execute(sql)
     conn.commit()
+
+
+def cancel_event(
+    event: Event,
+    db_name: str | None = None,
+    events_table_name: str | None = None,
+    user_table_name: str | None = None
+) -> None:
+    if db_name is None:
+        db_name = DEFAULT_DB_NAME
+    if events_table_name is None:
+        events_table_name = DEFAULT_EVENTS_TABLE_NAME
+    if user_table_name is None:
+        user_table_name = DEFAULT_USER_EVENTS_TABLE_NAME
+
+    conn = get_conn(db_name)
+    for tbl in [events_table_name, user_table_name]:
+        sql = "DELETE FROM {} WHERE eventid = {}".format(tbl, event.event_id)
+        conn.execute(sql)
+    sql = "INSERT INTO {} VALUES\n({}, {}, {}, {}, {})".format(
+        events_table_name,
+        event.event_id,
+        event.event_name,
+        len(event.users),
+        1, # threshold % not down for cancelling
+        False
+    )
+    conn.commit()
