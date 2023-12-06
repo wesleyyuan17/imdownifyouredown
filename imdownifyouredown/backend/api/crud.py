@@ -15,7 +15,10 @@ class Action(Enum):
     delete = 2
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7bb21d2 (add ability to edit events from api)
 @dataclass(frozen=True)
 class EventAction:
     action: Action
