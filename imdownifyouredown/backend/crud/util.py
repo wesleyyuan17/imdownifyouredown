@@ -33,6 +33,7 @@ class Event:
     event_id: int
     users: list[User]
     event_name: str | None = None
+    live: bool = True
 
 
 @dataclass(frozen=True)

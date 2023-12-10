@@ -1,7 +1,13 @@
 from pathlib import Path
 from sqlite3 import Connection
 
-from imdownifyouredown.backend.crud.events import get_event, get_user, insert_event, cancel_event
+from imdownifyouredown.backend.crud.events import (
+    get_event,
+    get_user,
+    insert_event,
+    cancel_event,
+    edit_event
+)
 from imdownifyouredown.backend.crud.util import Event, User
 
 
@@ -73,3 +79,15 @@ def test_event_deletion(conn: Connection, tmp_path: Path):
     user_info = conn.execute("SELECT * FROM UserInfo").fetchall()
     for user in user_info:
         assert 3 not in user[2] # 2 is index of currentevents
+
+
+def test_edit_event(conn: Connection, tmp_path: Path):
+    edit_event(
+        1,
+        {"users": [1, 2, 3, 4]},
+        (tmp_path / "test.db").absolute()
+    )
+
+    event = conn.execute("SELECT * FROM Events WHERE eventid = 1").fetchall()[0]
+    print(event)
+    assert event[2] == [1, 2, 3, 4]

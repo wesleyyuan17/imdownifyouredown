@@ -138,13 +138,13 @@ def edit_event(
     with get_conn(db_name) as conn:
         event_params = dict(
             zip(
-                ["eventid", "eventname", "users", "live"],
+                ["event_id", "event_name", "users", "live"],
                 conn.execute(
                     "SELECT * FROM {} WHERE eventid = {}".format(
                         DEFAULT_EVENTS_TABLE_NAME,
                         event_id
                     )
-                )[0]
+                ).fetchall()[0]
             )
         )
         event_params.update(new_params)
@@ -162,3 +162,4 @@ def edit_event(
                 (new_event.event_id, new_event.event_name, new_event.users, new_event.live)
             ]
         )
+        conn.commit()
