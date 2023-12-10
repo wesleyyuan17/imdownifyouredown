@@ -27,20 +27,6 @@ def get_event(
         ).fetchall()
 
 
-def get_user(
-    user: User,
-    db_name: str | None = None
-) -> list:
-    db_name = db_name or config.db_name
-    with get_conn(db_name) as conn:
-        return conn.execute(
-            "SELECT * FROM {} WHERE userid = {}".format(
-                config.user_info_table,
-                user.user_id
-            )
-        ).fetchall()
-
-
 def insert_event(
     event: Event,
     db_name: str | None = None
