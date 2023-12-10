@@ -89,5 +89,4 @@ def test_edit_event(conn: Connection, tmp_path: Path):
     )
 
     event = conn.execute("SELECT * FROM Events WHERE eventid = 1").fetchall()[0]
-    print(event)
     assert event[2] == [1, 2, 3, 4]
