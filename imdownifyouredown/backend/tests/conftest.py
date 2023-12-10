@@ -3,7 +3,7 @@ import pytest
 import sqlite3
 from pathlib import Path
 
-from imdownifyouredown.backend.crud.util import adapt_list_to_json, convert_json_to_list
+from imdownifyouredown.backend.db.config import adapt_list_to_json, convert_json_to_list
 sqlite3.register_adapter(list, adapt_list_to_json)
 sqlite3.register_converter("json", convert_json_to_list)
 

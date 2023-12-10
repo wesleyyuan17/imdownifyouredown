@@ -1,8 +1,16 @@
 from pathlib import Path
 from sqlite3 import Connection
 
-from imdownifyouredown.backend.crud.users import insert_new_user, record_user_response
+from imdownifyouredown.backend.crud.users import get_user, insert_new_user, record_user_response
 from imdownifyouredown.backend.crud.util import User, UserResponse
+
+
+def test_get_user(conn: Connection, tmp_path: Path):
+    # conn fixture used to have same tmp_path to test db
+    assert get_user(
+        User(1, "test1"),
+        (tmp_path / "test.db").absolute()
+    ) == [(1, 'user1', [1, 2, 3], 3)]
 
 
 def test_user_insertion(conn: Connection, tmp_path: Path):

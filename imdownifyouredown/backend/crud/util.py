@@ -14,6 +14,8 @@ DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
 class EventResponse(Enum):
     NoResponse = 0
     Maybe = 1
+    
+    # implement public/private down
     Down = 2
     NotDown = 3
 
@@ -37,18 +39,6 @@ class UserResponse:
     event_id: int
     user_id: int
     response: EventResponse
-
-
-def adapt_list_to_json(l: list):
-    return json.dumps(l).encode("utf-8")
-
-
-def convert_json_to_list(data: object):
-    return json.loads(data.decode("utf-8"))
-
-
-sqlite3.register_adapter(list, adapt_list_to_json)
-sqlite3.register_converter("json", convert_json_to_list)
     
 
 @contextmanager

@@ -3,7 +3,6 @@ from sqlite3 import Connection
 
 from imdownifyouredown.backend.crud.events import (
     get_event,
-    get_user,
     insert_event,
     cancel_event,
     edit_event
@@ -45,14 +44,6 @@ def test_get_event(conn: Connection, tmp_path: Path):
         Event(1, [1, 2, 3]),
         (tmp_path / "test.db").absolute()
     ) == [(1, 'test1', [1, 2, 3], 1)]
-
-
-def test_get_user(conn: Connection, tmp_path: Path):
-    # conn fixture used to have same tmp_path to test db
-    assert get_user(
-        User(1, "test1"),
-        (tmp_path / "test.db").absolute()
-    ) == [(1, 'user1', [1, 2, 3], 3)]
 
 
 def test_event_insertion(conn: Connection, tmp_path: Path):

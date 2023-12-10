@@ -33,4 +33,4 @@ def convert_json_to_list(data: object):
     return json.loads(data.decode("utf-8"))
 
 
-config = DBConfig("test", [adapt_list_to_json], [convert_json_to_list])
+config = DBConfig("test", adapters=[adapt_list_to_json], converters=[convert_json_to_list])
