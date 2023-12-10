@@ -21,7 +21,8 @@
         "fields": [
             {"name": "eventid", "type": "int"},
             {"name": "user", "type": "int"},
-            {"name": "down", "type": "int"}
+            {"name": "publicdown", "type": "int"},
+            {"name": "privatedown", "type": "int"}
         ],
         "primary_key": ["eventid", "userid"],
         "foreign_keys": [

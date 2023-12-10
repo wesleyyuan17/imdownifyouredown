@@ -14,8 +14,6 @@ DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
 class EventResponse(Enum):
     NoResponse = 0
     Maybe = 1
-    
-    # implement public/private down
     Down = 2
     NotDown = 3
 
@@ -38,7 +36,8 @@ class Event:
 class UserResponse:
     event_id: int
     user_id: int
-    response: EventResponse
+    public_response: EventResponse
+    private_response: EventResponse
     
 
 @contextmanager

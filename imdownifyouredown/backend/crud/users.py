@@ -49,9 +49,9 @@ def record_user_response(
             )
         )
         conn.executemany(
-            f"INSERT INTO {config.user_response_table} VALUES (?, ?, ?)",
+            f"INSERT INTO {config.user_response_table} VALUES (?, ?, ?, ?)",
             [
-                (response.event_id, response.user_id, response.response)
+                (response.event_id, response.user_id, response.public_response, response.private_response)
             ]
         )
         conn.commit()

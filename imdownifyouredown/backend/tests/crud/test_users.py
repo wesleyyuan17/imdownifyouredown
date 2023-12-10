@@ -24,7 +24,7 @@ def test_user_insertion(conn: Connection, tmp_path: Path):
 
 def test_record_user_response(conn: Connection, tmp_path: Path):
     record_user_response(
-        UserResponse(1, 1, 3),
+        UserResponse(1, 1, 3, 0),
         (tmp_path / "test.db").absolute()
     )
 

@@ -62,10 +62,11 @@ def insert_event(
             )
 
         for user in event.users:
-            sql = "INSERT INTO {} VALUES ({}, {}, {})".format(
+            sql = "INSERT INTO {} VALUES ({}, {}, {}, {})".format(
                 config.user_response_table,
                 event.event_id,
                 user,
+                EventResponse.NoResponse.value,
                 EventResponse.NoResponse.value
             )
             conn.execute(sql)
