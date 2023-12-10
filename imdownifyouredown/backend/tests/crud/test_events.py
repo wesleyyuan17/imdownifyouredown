@@ -1,7 +1,7 @@
 from pathlib import Path
 from sqlite3 import Connection
 
-from imdownifyouredown.backend.crud.events import get_event, get_user
+from imdownifyouredown.backend.crud.events import get_event, get_user, insert_event, cancel_event
 from imdownifyouredown.backend.crud.util import Event, User
 
 
@@ -49,13 +49,27 @@ def test_get_user(conn: Connection, tmp_path: Path):
     ) == [(1, 'user1', [1, 2, 3], 3)]
 
 
-def test_event_insertion(conn: Connection):
-    pass
+def test_event_insertion(conn: Connection, tmp_path: Path):
+    insert_event(
+        Event(4, [3, 4]),
+        (tmp_path / "test.db").absolute()
+    )
+
+    assert len(conn.execute("SELECT * FROM Events WHERE eventid = 4").fetchall()) > 0
+    assert len(conn.execute("SELECT * FROM UserResponse WHERE eventid = 4").fetchall()) == 2
+    user_info = conn.execute("SELECT * FROM UserInfo WHERE userid IN (3, 4)").fetchall()
+    for user in user_info:
+        assert 4 in user[2] # 2 is index of currentevents
 
 
-def test_event_deletion(conn: Connection):
-    pass
+def test_event_deletion(conn: Connection, tmp_path: Path):
+    cancel_event(
+        3,
+        (tmp_path / "test.db").absolute()
+    )
 
-
-def test_enter_user_response(conn: Connection):
-    pass
+    assert len(conn.execute("SELECT * FROM Events WHERE eventid = 3").fetchall()) == 0
+    assert len(conn.execute("SELECT * FROM UserResponse WHERE eventid = 3").fetchall()) == 0
+    user_info = conn.execute("SELECT * FROM UserInfo").fetchall()
+    for user in user_info:
+        assert 3 not in user[2] # 2 is index of currentevents
