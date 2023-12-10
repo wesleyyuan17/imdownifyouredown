@@ -17,11 +17,11 @@
         ],
         "primary_key": ["userid"]
     },
-    "UserResponses": {
+    "UserResponse": {
         "fields": [
             {"name": "eventid", "type": "int"},
             {"name": "user", "type": "int"},
-            {"name": "down", "type": "bool"}
+            {"name": "down", "type": "int"}
         ],
         "primary_key": ["eventid", "userid"],
         "foreign_keys": [

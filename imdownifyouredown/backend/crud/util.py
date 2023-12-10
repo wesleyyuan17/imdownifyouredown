@@ -1,8 +1,12 @@
+import json
 import os
 import sqlite3
 
+from contextlib import contextmanager
 from dataclasses import dataclass
 from enum import Enum
+
+from imdownifyouredown.backend.db.config import DEFAULT_CONFIG
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
 
@@ -34,9 +38,26 @@ class UserResponse:
     response: EventResponse
 
 
+def adapt_list_to_json(l: list):
+    return json.dumps(l).encode("utf-8")
+
+
+def convert_json_to_list(data: object):
+    return json.loads(data.decode("utf-8"))
+
+
+sqlite3.register_adapter(list, adapt_list_to_json)
+sqlite3.register_converter("json", convert_json_to_list)
+    
+
+@contextmanager
 def get_conn(db_name: str) -> sqlite3.Connection:
-    db_path = os.path.join(DATA_DIR, f"{db_name}.db")
-    return sqlite3.connect(db_path)
+    db_path = os.path.join(DATA_DIR, db_name)
+    conn = sqlite3.connect(db_path, detect_types=sqlite3.PARSE_DECLTYPES)
+    try:
+        yield conn
+    finally:
+        conn.close()
 
 
 def generate_event_id():
