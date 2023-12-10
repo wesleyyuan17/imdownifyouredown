@@ -15,17 +15,13 @@ class Action(Enum):
     delete = 2
 
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 7bb21d2 (add ability to edit events from api)
 @dataclass(frozen=True)
 class EventAction:
     action: Action
     event: Event
 
 
-@router.get("/api/")
+@router.get("/edit/")
 def edit_event(action: EventAction):
     if action.action == Action.insert:
         insert_event(action.event)

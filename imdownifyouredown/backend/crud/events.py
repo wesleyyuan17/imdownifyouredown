@@ -1,3 +1,5 @@
+from typing import Any
+
 from imdownifyouredown.backend.crud.util import (
     DEFAULT_DB_NAME,
     DEFAULT_EVENTS_TABLE_NAME,
@@ -49,7 +51,7 @@ def insert_event(
     db_name = db_name or DEFAULT_DB_NAME
     with get_conn(db_name) as conn:
         conn.executemany(
-            f"INSERT INTO {DEFAULT_EVENTS_TABLE_NAME} VALUES\n(?, ?, ?, ?)",
+            f"INSERT INTO {DEFAULT_EVENTS_TABLE_NAME} VALUES (?, ?, ?, ?)",
             [
                 (event.event_id, event.event_name, event.users, True)
             ]
@@ -77,7 +79,7 @@ def insert_event(
             )
 
         for user in event.users:
-            sql = "INSERT INTO {} VALUES\n({}, {}, {})".format(
+            sql = "INSERT INTO {} VALUES ({}, {}, {})".format(
                 DEFAULT_USER_RESPONSE_TABLE_NAME,
                 event.event_id,
                 user,
@@ -125,3 +127,38 @@ def cancel_event(
             )
 
         conn.commit()
+
+
+def edit_event(
+    event_id: int,
+    new_params: dict[str, Any],
+    db_name: str | None = None
+):
+    db_name = db_name or DEFAULT_DB_NAME
+    with get_conn(db_name) as conn:
+        event_params = dict(
+            zip(
+                ["eventid", "eventname", "users", "live"],
+                conn.execute(
+                    "SELECT * FROM {} WHERE eventid = {}".format(
+                        DEFAULT_EVENTS_TABLE_NAME,
+                        event_id
+                    )
+                )[0]
+            )
+        )
+        event_params.update(new_params)
+        new_event = Event(**event_params)
+
+        conn.execute(
+            "DELETE FROM {} WHERE eventid = {}".format(
+                DEFAULT_EVENTS_TABLE_NAME,
+                event_id
+            )
+        )
+        conn.executemany(
+            f"INSERT INTO {DEFAULT_EVENTS_TABLE_NAME} VALUES (?, ?, ?, ?)",
+            [
+                (new_event.event_id, new_event.event_name, new_event.users, new_event.live)
+            ]
+        )
