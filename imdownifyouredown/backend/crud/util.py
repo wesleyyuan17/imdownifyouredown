@@ -6,13 +6,9 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from enum import Enum
 
-from imdownifyouredown.backend.db.config import DEFAULT_CONFIG
+from imdownifyouredown.backend.db.config import config
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
-DEFAULT_DB_NAME = "test.db"
-DEFAULT_EVENTS_TABLE_NAME = "Events"
-DEFAULT_USER_INFO_TABLE_NAME = "UserInfo"
-DEFAULT_USER_RESPONSE_TABLE_NAME = "UserResponse"
 
 
 class EventResponse(Enum):

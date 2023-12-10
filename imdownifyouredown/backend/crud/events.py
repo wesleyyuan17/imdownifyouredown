@@ -1,15 +1,12 @@
 from typing import Any
 
 from imdownifyouredown.backend.crud.util import (
-    DEFAULT_DB_NAME,
-    DEFAULT_EVENTS_TABLE_NAME,
-    DEFAULT_USER_INFO_TABLE_NAME,
-    DEFAULT_USER_RESPONSE_TABLE_NAME,
     Event,
     User,
     EventResponse,
     get_conn
 )
+from imdownifyouredown.backend.db.config import config
 
 
 def _resolve_db_table(ctx):
@@ -20,11 +17,11 @@ def get_event(
     event: Event,
     db_name: str | None = None
 ) -> list:
-    db_name = db_name or DEFAULT_DB_NAME
+    db_name = db_name or config.db_name
     with get_conn(db_name) as conn:
         return conn.execute(
             "SELECT * FROM {} WHERE eventid = {}".format(
-                DEFAULT_EVENTS_TABLE_NAME,
+                config.events_table,
                 event.event_id
             )
         ).fetchall()
@@ -34,11 +31,11 @@ def get_user(
     user: User,
     db_name: str | None = None
 ) -> list:
-    db_name = db_name or DEFAULT_DB_NAME
+    db_name = db_name or config.db_name
     with get_conn(db_name) as conn:
         return conn.execute(
             "SELECT * FROM {} WHERE userid = {}".format(
-                DEFAULT_USER_INFO_TABLE_NAME,
+                config.user_info_table,
                 user.user_id
             )
         ).fetchall()
@@ -48,10 +45,10 @@ def insert_event(
     event: Event,
     db_name: str | None = None
 ) -> None:
-    db_name = db_name or DEFAULT_DB_NAME
+    db_name = db_name or config.db_name
     with get_conn(db_name) as conn:
         conn.executemany(
-            f"INSERT INTO {DEFAULT_EVENTS_TABLE_NAME} VALUES (?, ?, ?, ?)",
+            f"INSERT INTO {config.events_table} VALUES (?, ?, ?, ?)",
             [
                 (event.event_id, event.event_name, event.users, True)
             ]
@@ -59,7 +56,7 @@ def insert_event(
 
         # add event to users, initialize responses
         sql = "SELECT * FROM {} WHERE userid IN {}".format(
-            DEFAULT_USER_INFO_TABLE_NAME,
+            config.user_info_table,
             tuple(event.users)
         )
         user_info = conn.execute(sql).fetchall()
@@ -67,12 +64,12 @@ def insert_event(
             userid, username, currentevents, numpastevents = ui
             conn.execute(
                 "DELETE FROM {} WHERE userid = {}".format(
-                    DEFAULT_USER_INFO_TABLE_NAME,
+                    config.user_info_table,
                     userid
                 )
             )
             conn.executemany(
-                f"INSERT INTO {DEFAULT_USER_INFO_TABLE_NAME} VALUES (?, ?, ?, ?)",
+                f"INSERT INTO {config.user_info_table} VALUES (?, ?, ?, ?)",
                 [
                     (userid, username, currentevents + [event.event_id], numpastevents + 1)
                 ]
@@ -80,7 +77,7 @@ def insert_event(
 
         for user in event.users:
             sql = "INSERT INTO {} VALUES ({}, {}, {})".format(
-                DEFAULT_USER_RESPONSE_TABLE_NAME,
+                config.user_response_table,
                 event.event_id,
                 user,
                 EventResponse.NoResponse.value
@@ -94,19 +91,19 @@ def cancel_event(
     event_id: int,
     db_name: str | None = None
 ) -> None:
-    db_name = db_name or DEFAULT_DB_NAME
+    db_name = db_name or config.db_name
     with get_conn(db_name) as conn:
         users = conn.execute(
-            f"SELECT users FROM {DEFAULT_EVENTS_TABLE_NAME} WHERE eventid = {event_id}"
+            f"SELECT users FROM {config.events_table} WHERE eventid = {event_id}"
         ).fetchall()[0][0]
         # remove event from event/response tables
-        for tbl in [DEFAULT_EVENTS_TABLE_NAME, DEFAULT_USER_RESPONSE_TABLE_NAME]:
+        for tbl in [config.events_table, config.user_response_table]:
             sql = "DELETE FROM {} WHERE eventid = {}".format(tbl, event_id)
             conn.execute(sql)
 
         # remove event from current events of users
         sql = "SELECT * FROM {} WHERE userid IN {}".format(
-            DEFAULT_USER_INFO_TABLE_NAME,
+            config.user_info_table,
             tuple(users)
         )
         user_info = conn.execute(sql).fetchall()
@@ -115,12 +112,12 @@ def cancel_event(
             currentevents.remove(event_id)
             conn.execute(
                 "DELETE FROM {} WHERE userid = {}".format(
-                    DEFAULT_USER_INFO_TABLE_NAME,
+                    config.user_info_table,
                     userid
                 )
             )
             conn.executemany(
-                f"INSERT INTO {DEFAULT_USER_INFO_TABLE_NAME} VALUES (?, ?, ?, ?)",
+                f"INSERT INTO {config.user_info_table} VALUES (?, ?, ?, ?)",
                 [
                     (userid, username, currentevents, numpastevents - 1)
                 ]
@@ -134,14 +131,14 @@ def edit_event(
     new_params: dict[str, Any],
     db_name: str | None = None
 ):
-    db_name = db_name or DEFAULT_DB_NAME
+    db_name = db_name or config.db_name
     with get_conn(db_name) as conn:
         event_params = dict(
             zip(
                 ["event_id", "event_name", "users", "live"],
                 conn.execute(
                     "SELECT * FROM {} WHERE eventid = {}".format(
-                        DEFAULT_EVENTS_TABLE_NAME,
+                        config.events_table,
                         event_id
                     )
                 ).fetchall()[0]
@@ -152,12 +149,12 @@ def edit_event(
 
         conn.execute(
             "DELETE FROM {} WHERE eventid = {}".format(
-                DEFAULT_EVENTS_TABLE_NAME,
+                config.events_table,
                 event_id
             )
         )
         conn.executemany(
-            f"INSERT INTO {DEFAULT_EVENTS_TABLE_NAME} VALUES (?, ?, ?, ?)",
+            f"INSERT INTO {config.events_table} VALUES (?, ?, ?, ?)",
             [
                 (new_event.event_id, new_event.event_name, new_event.users, new_event.live)
             ]
