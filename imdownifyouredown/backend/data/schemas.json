@@ -1,0 +1,32 @@
+{
+    "Events": {
+        "fields": [
+            {"name": "eventid", "type": "int"},
+            {"name": "eventname", "type": "str"},
+            {"name": "subscribedusers", "type": "list[int]"},
+            {"name": "live", "type": "bool"}
+        ],
+        "primary_key": ["eventid"]
+    },
+    "UserInfo": {
+        "fields": [
+            {"name": "userid", "type": "int"},
+            {"name": "username", "type": "str"},
+            {"name": "currentevents", "type": "list[int]"},
+            {"name": "numpastevents", "type": "int"}
+        ],
+        "primary_key": ["userid"]
+    },
+    "UserResponses": {
+        "fields": [
+            {"name": "eventid", "type": "int"},
+            {"name": "user", "type": "int"},
+            {"name": "down", "type": "bool"}
+        ],
+        "primary_key": ["eventid", "userid"],
+        "foreign_keys": [
+            {"field": "eventid", "ref_table": "Events", "ref_field": "eventid"},
+            {"field": "userid", "ref_table": "UserInfo", "ref_field": "userid"}
+        ]
+    }
+}

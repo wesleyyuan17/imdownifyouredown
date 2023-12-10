@@ -1,14 +1,13 @@
 import pytest
 
-import os
 import sqlite3
+from pathlib import Path
 
 
-@pytest.fixture
-def conn():
-    file_dir = os.path.dirname(__file__)
-    test_db_path = os.path.join(os.path.dirname(file_dir), "data", "test.db")
-    conn = sqlite3.connect(test_db_path)
+@pytest.fixture(scope="session")
+def conn(tmp_path: Path):
+    test_db_path = tmp_path / "test.db"
+    conn = sqlite3.connect(test_db_path.absolute())
 
     conn.execute("DROP TABLE IF EXISTS Events")
     conn.execute("CREATE TABLE IF NOT EXISTS Events(eventid, userid, eventname, down)")
