@@ -1,4 +1,7 @@
+from imdownifyouredown.backend.crud.events import cancel_event
+from imdownifyouredown.backend.crud.notifications import notify_cancel
 from imdownifyouredown.backend.crud.util import (
+    EventResponse,
     User,
     UserResponse,
     get_conn
@@ -54,6 +57,17 @@ def record_user_response(
                 (response.event_id, response.user_id, response.public_response, response.private_response)
             ]
         )
+
+        # check if all privately not down in which case, cancel event
+        event_responses = conn.execute(
+            "SELECT private_down FROM {} WHERE eventid = {}".format(
+                config.user_response_table,
+                response.event_id
+            )
+        ).fetchall()
+        if all([r[0] == EventResponse.NotDown.value for r in event_responses]):
+            notify_cancel(response.event_id)
+            cancel_event(response.event_id)
         conn.commit()
 
 
