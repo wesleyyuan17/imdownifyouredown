@@ -24,17 +24,29 @@ def test_db_read(conn: Connection):
         (3, 'user3', [1, 3], 2),
         (4, 'user4', [3], 1)
     ]
-    user_response_results = conn.execute("SELECT * FROM UserResponse").fetchall()
-    assert user_response_results == [
-        (1, 1, 2, 0),
-        (1, 2, 0, 0),
-        (1, 3, 2, 0),
-        (2, 1, 2, 0),
-        (2, 2, 3, 0),
-        (3, 1, 0, 0),
-        (3, 2, 1, 0),
-        (3, 3, 2, 0),
-        (3, 4, 3, 0)
+    user_public_response_results = conn.execute("SELECT * FROM UserPublicResponse").fetchall()
+    assert user_public_response_results == [
+        (1, 1, 2),
+        (1, 2, 0),
+        (1, 3, 2),
+        (2, 1, 2),
+        (2, 2, 3),
+        (3, 1, 0),
+        (3, 2, 1),
+        (3, 3, 2),
+        (3, 4, 3)
+    ]
+    user_private_response_results = conn.execute("SELECT * FROM UserPrivateResponse").fetchall()
+    assert user_private_response_results == [
+        (1, 1, 0),
+        (1, 2, 0),
+        (1, 3, 0),
+        (2, 1, 0),
+        (2, 2, 0),
+        (3, 1, 0),
+        (3, 2, 0),
+        (3, 3, 0),
+        (3, 4, 0)
     ]
 
 
@@ -53,7 +65,8 @@ def test_event_insertion(conn: Connection, tmp_path: Path):
     )
 
     assert len(conn.execute("SELECT * FROM Events WHERE eventid = 4").fetchall()) > 0
-    assert len(conn.execute("SELECT * FROM UserResponse WHERE eventid = 4").fetchall()) == 2
+    assert len(conn.execute("SELECT * FROM UserPublicResponse WHERE eventid = 4").fetchall()) == 2
+    assert len(conn.execute("SELECT * FROM UserPrivateResponse WHERE eventid = 4").fetchall()) == 2
     user_info = conn.execute("SELECT * FROM UserInfo WHERE userid IN (3, 4)").fetchall()
     for user in user_info:
         assert 4 in user[2] # 2 is index of currentevents
@@ -66,7 +79,8 @@ def test_event_deletion(conn: Connection, tmp_path: Path):
     )
 
     assert len(conn.execute("SELECT * FROM Events WHERE eventid = 3").fetchall()) == 0
-    assert len(conn.execute("SELECT * FROM UserResponse WHERE eventid = 3").fetchall()) == 0
+    assert len(conn.execute("SELECT * FROM UserPublicResponse WHERE eventid = 3").fetchall()) == 0
+    assert len(conn.execute("SELECT * FROM UserPrivateResponse WHERE eventid = 3").fetchall()) == 0
     user_info = conn.execute("SELECT * FROM UserInfo").fetchall()
     for user in user_info:
         assert 3 not in user[2] # 2 is index of currentevents

@@ -5,7 +5,8 @@ from dataclasses import dataclass
 DEFAULT_DB_NAME = "test.db"
 DEFAULT_EVENTS_TABLE_NAME = "Events"
 DEFAULT_USER_INFO_TABLE_NAME = "UserInfo"
-DEFAULT_USER_RESPONSE_TABLE_NAME = "UserResponse"
+DEFAULT_USER_PUBLIC_RESPONSE_TABLE_NAME = "UserPublicResponse"
+DEFAULT_USER_PRIVATE_RESPONSE_TABLE_NAME = "UserPrivateResponse"
 
 
 @dataclass(frozen=True)
@@ -14,7 +15,8 @@ class DBConfig:
     db_name: str = DEFAULT_DB_NAME
     events_table: str = DEFAULT_EVENTS_TABLE_NAME
     user_info_table: str = DEFAULT_USER_INFO_TABLE_NAME
-    user_response_table: str = DEFAULT_USER_RESPONSE_TABLE_NAME
+    user_public_response_table: str = DEFAULT_USER_PUBLIC_RESPONSE_TABLE_NAME
+    user_private_response_table: str = DEFAULT_USER_PRIVATE_RESPONSE_TABLE_NAME
     adapters: list[callable] | None = None
     converters: list[callable] | None = None
 

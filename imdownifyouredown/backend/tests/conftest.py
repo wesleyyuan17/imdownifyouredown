@@ -15,10 +15,12 @@ def conn(tmp_path: Path):
 
     conn.execute("DROP TABLE IF EXISTS Events")
     conn.execute("DROP TABLE IF EXISTS UserInfo")
-    conn.execute("DROP TABLE IF EXISTS UserResponse")
+    conn.execute("DROP TABLE IF EXISTS UserPublicResponse")
+    conn.execute("DROP TABLE IF EXISTS UserPrivateResponse")
     conn.execute("CREATE TABLE IF NOT EXISTS Events(eventid PRIMARY KEY, eventname, users json, live)")
     conn.execute("CREATE TABLE IF NOT EXISTS UserInfo(userid PRIMARY KEY, username, currentevents json, numpastevents)")
-    conn.execute("CREATE TABLE IF NOT EXISTS UserResponse(eventid, userid, public_down, private_down, PRIMARY KEY (eventid, userid))")
+    conn.execute("CREATE TABLE IF NOT EXISTS UserPublicResponse(eventid, userid, down, PRIMARY KEY (eventid, userid))")
+    conn.execute("CREATE TABLE IF NOT EXISTS UserPrivateResponse(eventid, userid, down, PRIMARY KEY (eventid, userid))")
     conn.executemany(
         "INSERT INTO Events VALUES (?, ?, ?, ?)",
         [
@@ -37,17 +39,31 @@ def conn(tmp_path: Path):
         ]
     )
     conn.executemany(
-        "INSERT INTO UserResponse VALUES (?, ?, ?, ?)",
+        "INSERT INTO UserPublicResponse VALUES (?, ?, ?)",
         [
-            (1, 1, 2, 0),
-            (1, 2, 0, 0),
-            (1, 3, 2, 0),
-            (2, 1, 2, 0),
-            (2, 2, 3, 0),
-            (3, 1, 0, 0),
-            (3, 2, 1, 0),
-            (3, 3, 2, 0),
-            (3, 4, 3, 0)
+            (1, 1, 2),
+            (1, 2, 0),
+            (1, 3, 2),
+            (2, 1, 2),
+            (2, 2, 3),
+            (3, 1, 0),
+            (3, 2, 1),
+            (3, 3, 2),
+            (3, 4, 3)
+        ]
+    )
+    conn.executemany(
+        "INSERT INTO UserPrivateResponse VALUES (?, ?, ?)",
+        [
+            (1, 1, 0),
+            (1, 2, 0),
+            (1, 3, 0),
+            (2, 1, 0),
+            (2, 2, 0),
+            (3, 1, 0),
+            (3, 2, 0),
+            (3, 3, 0),
+            (3, 4, 0)
         ]
     )
     conn.commit()

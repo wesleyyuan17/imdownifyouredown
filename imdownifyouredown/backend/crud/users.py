@@ -38,7 +38,7 @@ def insert_new_user(
         conn.commit()
 
 
-def record_user_response(
+def record_user_public_response(
     response: UserResponse,
     db_name: str | None = None
 ):
@@ -46,29 +46,34 @@ def record_user_response(
     with get_conn(db_name) as conn:
         conn.execute(
             "DELETE FROM {} WHERE eventid = {} AND userid = {}".format(
-                config.user_response_table,
+                config.user_public_response_table,
                 response.event_id,
                 response.user_id
             )
         )
         conn.executemany(
-            f"INSERT INTO {config.user_response_table} VALUES (?, ?, ?, ?)",
+            f"INSERT INTO {config.user_public_response_table} VALUES (?, ?, ?)",
             [
-                (response.event_id, response.user_id, response.public_response, response.private_response)
+                (response.event_id, response.user_id, response.response)
             ]
         )
 
+        conn.commit()
+
+
+def record_user_private_response(
+    response: UserResponse,
+    db_name: str | None = None
+):
+    db_name = db_name or config.db_name
+    with get_conn(db_name) as conn:
         # check if all privately not down in which case, cancel event
         event_responses = conn.execute(
-            "SELECT private_down FROM {} WHERE eventid = {}".format(
-                config.user_response_table,
+            "SELECT down FROM {} WHERE eventid = {}".format(
+                config.user_private_response_table,
                 response.event_id
             )
         ).fetchall()
         if all([r[0] == EventResponse.NotDown.value for r in event_responses]):
             notify_cancel(response.event_id)
             cancel_event(response.event_id)
-        conn.commit()
-
-
-

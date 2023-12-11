@@ -36,8 +36,7 @@ class Event:
 class UserResponse:
     event_id: int
     user_id: int
-    public_response: EventResponse
-    private_response: EventResponse
+    response: EventResponse
     
 
 @contextmanager

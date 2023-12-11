@@ -1,7 +1,12 @@
 from pathlib import Path
 from sqlite3 import Connection
 
-from imdownifyouredown.backend.crud.users import get_user, insert_new_user, record_user_response
+from imdownifyouredown.backend.crud.users import (
+    get_user,
+    insert_new_user,
+    record_user_public_response,
+    record_user_private_response
+)
 from imdownifyouredown.backend.crud.util import User, UserResponse
 
 
@@ -22,11 +27,21 @@ def test_user_insertion(conn: Connection, tmp_path: Path):
     assert len(conn.execute("SELECT * FROM UserInfo WHERE userid = 5").fetchall()) == 1
 
 
-def test_record_user_response(conn: Connection, tmp_path: Path):
-    record_user_response(
-        UserResponse(1, 1, 3, 0),
+def test_record_user_public_response(conn: Connection, tmp_path: Path):
+    record_user_public_response(
+        UserResponse(1, 1, 3),
         (tmp_path / "test.db").absolute()
     )
 
-    result = conn.execute("SELECT * FROM UserResponse WHERE eventid = 1 AND userid = 1").fetchall()
+    result = conn.execute("SELECT * FROM UserPublicResponse WHERE eventid = 1 AND userid = 1").fetchall()
     assert result[0][2] == 3
+
+
+def test_record_user_private_response(conn: Connection, tmp_path: Path):
+    record_user_private_response(
+        UserResponse(1, 1, 0),
+        (tmp_path / "test.db").absolute()
+    )
+
+    result = conn.execute("SELECT * FROM UserPrivateResponse WHERE eventid = 1 AND userid = 1").fetchall()
+    assert result[0][2] == 0

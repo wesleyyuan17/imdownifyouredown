@@ -62,11 +62,17 @@ def insert_event(
             )
 
         for user in event.users:
-            sql = "INSERT INTO {} VALUES ({}, {}, {}, {})".format(
-                config.user_response_table,
+            sql = "INSERT INTO {} VALUES ({}, {}, {})".format(
+                config.user_public_response_table,
                 event.event_id,
                 user,
-                EventResponse.NoResponse.value,
+                EventResponse.NoResponse.value
+            )
+            conn.execute(sql)
+            sql = "INSERT INTO {} VALUES ({}, {}, {})".format(
+                config.user_private_response_table,
+                event.event_id,
+                user,
                 EventResponse.NoResponse.value
             )
             conn.execute(sql)
@@ -84,7 +90,11 @@ def cancel_event(
             f"SELECT users FROM {config.events_table} WHERE eventid = {event_id}"
         ).fetchall()[0][0]
         # remove event from event/response tables
-        for tbl in [config.events_table, config.user_response_table]:
+        for tbl in [
+            config.events_table,
+            config.user_public_response_table,
+            config.user_private_response_table
+        ]:
             sql = "DELETE FROM {} WHERE eventid = {}".format(tbl, event_id)
             conn.execute(sql)
 
