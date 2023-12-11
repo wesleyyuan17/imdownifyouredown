@@ -8,7 +8,10 @@ from imdownifyouredown.backend.crud.events import (
     edit_event,
     cancel_event
 )
-from imdownifyouredown.backend.crud.users import record_user_response
+from imdownifyouredown.backend.crud.users import (
+    record_user_public_response,
+    record_user_private_response
+)
 from imdownifyouredown.backend.crud.util import Event, UserResponse
 
 router = APIRouter()
@@ -40,6 +43,11 @@ def edit_event(action: EventAction):
         raise ValueError("Unknown event action: {}".format(action.action))
     
 
-@router.get("/events/{event_id}/")
+@router.get("/events/{event_id}/public/")
 def new_user_response(response: UserResponse):
-    record_user_response(response)
+    record_user_public_response(response)
+
+
+@router.get("/events/{event_id}/private/")
+def new_user_response(response: UserResponse):
+    record_user_private_response(response)
