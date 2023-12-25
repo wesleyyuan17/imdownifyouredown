@@ -1,12 +1,13 @@
 import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import logo from './logo.svg';
 import './App.css';
 
-import {HomePage} from "./components/HomePage"
-import {User, Event} from "./components/util"
+import { HomePage } from "./components/HomePage";
+import { HeaderBanner, User, Event } from "./components/util";
 import { EventPage } from './components/EventPage';
 
-function App() {
+const App: React.FC = () => {
   const user: User = { user_id: 1, username: "User" };
   const event: Event = {
     event_id: 1,
@@ -15,34 +16,23 @@ function App() {
     description: "This is a test event"
   }
   return (
-    <div className="App">
-      {/* <HomePage user={user} /> */}
-      <EventPage user={user} event={event} />
-    </div>
+    <Router>
+      <div>
+        {/* Render the HeaderBanner component on every page */}
+        <header><HeaderBanner user={user} /></header>
+
+        {/* Use Switch to render only the first matching Route */}
+        <Routes>
+          <Route path="/home" element={<HomePage />} />
+          <Route path="/events" element={<EventPage user={user} event={event} />} />
+          {/* <Route path="/user" component={UserPage} /> */}
+
+          {/* Redirect to the home page if no route matches */}
+          <Route path="*" element={<HomePage />} />
+        </Routes>
+      </div>
+    </Router>
   );
-}
+};
 
 export default App;
-
-// const App: React.FC = () => {
-//   return (
-//     <Router>
-//       <div>
-//         {/* Render the HeaderBanner component on every page */}
-//         <HeaderBanner />
-
-//         {/* Use Switch to render only the first matching Route */}
-//         <Switch>
-//           <Route path="/home" component={HomePage} />
-//           <Route path="/events" component={EventPage} />
-//           <Route path="/user" component={UserPage} />
-
-//           {/* Redirect to the home page if no route matches */}
-//           <Redirect to="/home" />
-//         </Switch>
-//       </div>
-//     </Router>
-//   );
-// };
-
-// export default App;

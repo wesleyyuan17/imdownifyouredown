@@ -1,10 +1,9 @@
-import { HeaderBanner, User, Event } from "./util"
+import { User, Event } from "./util"
 import "./customTypes.css"
 
 export function EventPage(props: {user: User, event: Event}) {
     return (
         <div>
-            <HeaderBanner user={props.user} />
             <EventBody user={props.user} event={props.event} />
         </div>
     );

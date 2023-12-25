@@ -1,10 +1,8 @@
 import {User, HeaderBanner} from "./util"
 
 
-export function HomePage(props: {user: User}) {
+export function HomePage() {
     return (
-        <header>
-            <HeaderBanner user={props.user} />
-        </header>
+        <span>Home</span>
     );
 }
