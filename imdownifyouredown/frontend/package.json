@@ -1,5 +1,8 @@
 {
   "dependencies": {
-    "react-native": "^0.73.1"
+    "react-native": "^0.73.1",
+    "nth-check": ">=2.0.1",
+    "@adobe/css-tools": ">=4.3.2",
+    "postcss": ">=8.4.31"
   }
 }
