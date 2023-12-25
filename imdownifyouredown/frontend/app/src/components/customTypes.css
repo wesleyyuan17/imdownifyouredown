@@ -1,0 +1,26 @@
+.header-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #eee;
+}
+
+.left-align,
+.right-align {
+    flex: 1;
+}
+
+.left-align {
+    text-align: left;
+}
+
+.right-align {
+    text-align: right;
+}
+
+.event-banner {
+    width: 1500px;
+    height: 300px;
+    align-items: center;
+}
