@@ -21,7 +21,7 @@ const App: React.FC = () => {
         {/* Render the HeaderBanner component on every page */}
         <header><HeaderBanner user={user} /></header>
 
-        {/* Use Switch to render only the first matching Route */}
+        {/* Use Routes to render only the first matching Route */}
         <Routes>
           <Route path="/home" element={<HomePage />} />
           <Route path="/events" element={<EventPage user={user} event={event} />} />
