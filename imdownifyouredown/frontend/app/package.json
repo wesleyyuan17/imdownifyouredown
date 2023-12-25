@@ -19,7 +19,8 @@
     "postcss": ">=8.4.31"
   },
   "devDependencies": {
-    "react-scripts": "5.0.1"
+    "react-scripts": "5.0.1",
+    "postcss": ">=8.4.31"
   },
   "scripts": {
     "start": "react-scripts start",
