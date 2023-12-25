@@ -24,7 +24,7 @@ class EventAction:
 
 
 @router.get("/events/{event_id}")
-def get_event(event_id: int):
+def get_event_info(event_id: int):
     return get_event(event_id)
 
 
@@ -43,11 +43,11 @@ def edit_event(action: EventAction):
         raise ValueError("Unknown event action: {}".format(action.action))
     
 
-@router.get("/events/{event_id}/public/")
-def new_user_response(response: UserResponse):
+@router.get("/events/public/")
+def new_user_response(event_id: int, response: UserResponse):
     record_user_public_response(response)
 
 
-@router.get("/events/{event_id}/private/")
-def new_user_response(response: UserResponse):
+@router.get("/events/private/")
+def new_user_response(event_id: int, response: UserResponse):
     record_user_private_response(response)

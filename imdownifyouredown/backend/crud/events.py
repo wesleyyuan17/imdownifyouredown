@@ -2,7 +2,6 @@ from typing import Any
 
 from imdownifyouredown.backend.crud.util import (
     Event,
-    User,
     EventResponse,
     get_conn
 )
@@ -14,15 +13,22 @@ def _resolve_db_table(ctx):
 
 
 def get_event(
-    event: Event,
+    event: Event | int,
     db_name: str | None = None
 ) -> list:
     db_name = db_name or config.db_name
-    with get_conn(db_name) as conn:
+    if isinstance(event, int):
+        event_id = event
+    elif isinstance(event, Event):
+        event_id = event.event_id
+    else:
+        raise TypeError(f"Unknown type for event: {type(event)}")
+    
+    with get_conn(db_name, read_only=True) as conn:
         return conn.execute(
             "SELECT * FROM {} WHERE eventid = {}".format(
                 config.events_table,
-                event.event_id
+                event_id
             )
         ).fetchall()
 
@@ -127,7 +133,7 @@ def edit_event(
     event_id: int,
     new_params: dict[str, Any],
     db_name: str | None = None
-):
+) -> None:
     db_name = db_name or config.db_name
     with get_conn(db_name) as conn:
         event_params = dict(

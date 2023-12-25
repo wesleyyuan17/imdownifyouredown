@@ -1,21 +1,15 @@
-import pytest
-
+import os
 import sqlite3
-from pathlib import Path
 
-from fastapi import FastAPI
-from fastapi.testclient import TestClient
-
-from imdownifyouredown.backend.api import api_router
 from imdownifyouredown.backend.db.config import adapt_list_to_json, convert_json_to_list
 sqlite3.register_adapter(list, adapt_list_to_json)
 sqlite3.register_converter("json", convert_json_to_list)
 
+DATABASE_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
 
-@pytest.fixture
-def conn(tmp_path: Path):
-    test_db_path = tmp_path / "test.db"
-    conn = sqlite3.connect(test_db_path.absolute(), detect_types=sqlite3.PARSE_DECLTYPES)
+
+if __name__ == "__main__":
+    conn = sqlite3.connect(os.path.join(DATABASE_DIR, "test.db"), detect_types=sqlite3.PARSE_DECLTYPES)
 
     conn.execute("DROP TABLE IF EXISTS Events")
     conn.execute("DROP TABLE IF EXISTS UserInfo")
@@ -71,13 +65,3 @@ def conn(tmp_path: Path):
         ]
     )
     conn.commit()
-
-    return conn
-
-
-@pytest.fixture
-def client(conn: sqlite3.Connection):
-    app = FastAPI()
-    app.include_router(api_router)
-
-    return TestClient(app)

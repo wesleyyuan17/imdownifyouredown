@@ -1,4 +1,5 @@
 import json
+import os
 import sqlite3
 from dataclasses import dataclass
 
@@ -11,8 +12,8 @@ DEFAULT_USER_PRIVATE_RESPONSE_TABLE_NAME = "UserPrivateResponse"
 
 @dataclass(frozen=True)
 class DBConfig:
-    db_name:  str
-    db_name: str = DEFAULT_DB_NAME
+    data_dir: str = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
+    db_name: str = os.path.join(data_dir, DEFAULT_DB_NAME)
     events_table: str = DEFAULT_EVENTS_TABLE_NAME
     user_info_table: str = DEFAULT_USER_INFO_TABLE_NAME
     user_public_response_table: str = DEFAULT_USER_PUBLIC_RESPONSE_TABLE_NAME
@@ -35,4 +36,9 @@ def convert_json_to_list(data: object):
     return json.loads(data.decode("utf-8"))
 
 
-config = DBConfig("test", adapters=[adapt_list_to_json], converters=[convert_json_to_list])
+config = DBConfig(adapters=[adapt_list_to_json], converters=[convert_json_to_list])
+# tests_config = DBConfig(
+#     os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "test.db"),
+#     adapters=[adapt_list_to_json],
+#     converters=[convert_json_to_list]
+# )

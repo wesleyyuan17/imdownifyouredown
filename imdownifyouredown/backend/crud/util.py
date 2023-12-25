@@ -40,8 +40,9 @@ class UserResponse:
     
 
 @contextmanager
-def get_conn(db_name: str) -> sqlite3.Connection:
+def get_conn(db_name: str, read_only: bool=False) -> sqlite3.Connection:
     db_path = os.path.join(DATA_DIR, db_name)
+    # acquire read/write lock with relevant permissions
     conn = sqlite3.connect(db_path, detect_types=sqlite3.PARSE_DECLTYPES)
     try:
         yield conn

@@ -7,5 +7,5 @@ setup(
    author="Wesley Yuan",
    author_email="wesley.yuan1746@gmail.com",
    packages=["imdownifyouredown"],  #same as name
-   install_requires=["fastapi", "pysqlite3", "pytest"], #external packages as dependencies
+   install_requires=["fastapi", "pysqlite3", "pytest", "httpx"], #external packages as dependencies
 )

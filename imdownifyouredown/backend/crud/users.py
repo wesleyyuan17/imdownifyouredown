@@ -14,7 +14,7 @@ def get_user(
     db_name: str | None = None
 ) -> list:
     db_name = db_name or config.db_name
-    with get_conn(db_name) as conn:
+    with get_conn(db_name, read_only=True) as conn:
         return conn.execute(
             "SELECT * FROM {} WHERE userid = {}".format(
                 config.user_info_table,
@@ -26,7 +26,7 @@ def get_user(
 def insert_new_user(
     user: User,
     db_name: str | None = None
-):
+) -> None:
     db_name = db_name or config.db_name
     with get_conn(db_name) as conn:
         conn.executemany(
@@ -41,7 +41,7 @@ def insert_new_user(
 def record_user_public_response(
     response: UserResponse,
     db_name: str | None = None
-):
+) -> None:
     db_name = db_name or config.db_name
     with get_conn(db_name) as conn:
         conn.execute(
@@ -64,7 +64,17 @@ def record_user_public_response(
 def record_user_private_response(
     response: UserResponse,
     db_name: str | None = None
-):
+) -> None:
+    def resolve_responses(event_responses: list) -> bool:
+        """
+        Helper function that determines whether an event should be cancelled. Returns
+        True if cancelled, False if still on.
+
+        Will handle conditional responses in the future, for now only cancel if all
+        indicate not down.
+        """
+        return all([r[0] == EventResponse.NotDown.value for r in event_responses])
+    
     db_name = db_name or config.db_name
     with get_conn(db_name) as conn:
         conn.execute(
@@ -88,7 +98,7 @@ def record_user_private_response(
                 response.event_id
             )
         ).fetchall()
-        if all([r[0] == EventResponse.NotDown.value for r in event_responses]):
+        if resolve_responses(event_responses):
             notify_cancel(response.event_id)
             cancel_event(response.event_id)
 
