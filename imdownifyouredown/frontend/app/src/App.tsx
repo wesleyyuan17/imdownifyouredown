@@ -8,7 +8,12 @@ import { EventPage } from './components/EventPage';
 
 function App() {
   const user: User = { user_id: 1, username: "User" };
-  const event: Event = { event_id: 1, name: "TestEvent", users: [user, user] }
+  const event: Event = {
+    event_id: 1,
+    name: "TestEvent",
+    users: [user, user],
+    description: "This is a test event"
+  }
   return (
     <div className="App">
       {/* <HomePage user={user} /> */}

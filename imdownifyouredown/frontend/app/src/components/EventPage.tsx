@@ -5,20 +5,32 @@ export function EventPage(props: {user: User, event: Event}) {
     return (
         <div>
             <HeaderBanner user={props.user} />
-            <EventBody event={props.event} />
+            <EventBody user={props.user} event={props.event} />
         </div>
     );
 }
 
 
-function EventBody(props: {event: Event}) {
+function EventBody(props: {user: User, event: Event}) {
     return (
         <div>
             <div>
                 <EventBanner event={props.event} />
             </div>
             <div>
+                <EventDescription event={props.event} />
+            </div>
+            <br/>
+            <div>
+                <EventUserResponse user={props.user} event={props.event} />
+            </div>
+            <br/>
+            <div>
                 <EventGuestsTable event={props.event} />
+            </div>
+            <br/>
+            <div>
+                <EventStatus event={props.event} />
             </div>
         </div>
     );
@@ -29,8 +41,51 @@ function EventBanner(props: {event: Event}) {
     return (
         <div className="event-banner">
             <image>
-                Placeholder
+                Image Placeholder
             </image>
+        </div>
+    );
+}
+
+
+function EventDescription(props: {event: Event}) {
+    return (
+        <div>
+            {props.event.description}
+        </div>
+    )
+}
+
+
+function EventUserResponse(props: {user: User, event: Event}) {
+    return (
+        <div>
+            <UserPublicResponse user={props.user} event={props.event} />
+            <UserPrivateResponse user={props.user} event={props.event} />
+        </div>
+    );
+}
+
+
+function UserPublicResponse(props: {user: User, event: Event}) {
+    return (
+        <div>
+            <span>Public Response: </span>
+            <button>Down</button>
+            <button>Maybe</button>
+            <button>Not Down</button>
+        </div>
+    );
+}
+
+
+function UserPrivateResponse(props: {user: User, event: Event}) {
+    return (
+        <div>
+            <span>Private Response: </span>
+            <button>Down</button>
+            <button>Maybe</button>
+            <button>Not Down</button>
         </div>
     );
 }
@@ -78,4 +133,11 @@ function EventGuestsRow(props: {
             <td width="200px">{props.response}</td>
         </tr>
     );
+}
+
+
+function EventStatus(props: {event: Event}) {
+    return (
+        <span><b>Event Status:</b> Still On!</span>
+    )
 }

@@ -13,6 +13,7 @@ interface Event {
   event_id: number;
   name: string;
   users: Users;
+  description: string;
 }
 
 
@@ -52,4 +53,4 @@ function UserIcon(props: { user: User }) {
 }
 
 
-export type {User as User, Event as Event};
+export type { User as User, Event as Event };
