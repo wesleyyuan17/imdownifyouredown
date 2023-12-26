@@ -25,6 +25,7 @@ class EventAction:
 
 @router.get("/events")
 def get_event_info(event_id: int):
+    print(get_event(event_id))
     return get_event(event_id)
 
 

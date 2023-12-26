@@ -1,28 +1,54 @@
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { User, Event } from "./util"
 import "./customTypes.css"
 
-export function EventPage(props: {user: User, event: Event}) {
-    // const [searchParams, setSearchParams] = useSearchParams();
-    // const user: User = JSON.parse(searchParams.get("user") || "{}");
-    // const event: Event = JSON.parse(searchParams.get("event") || "{}");
-    return (
+
+async function getEventInfo(event_id: number) {
+    const response = await fetch(`http://localhost:8000/events?event_id=${event_id}`)
+    if (!response.ok) {
+        throw new Error(response.statusText);
+    }
+    return response.json()
+}
+
+
+export function EventPage(props: {user: User}) {
+    const [event, setEvent] = useState<Event>();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const event_id = Number(searchParams.get("event_id"));
+
+    useEffect(() => {
+        getEventInfo(event_id).then(data => setEvent(data));
+    }, []);
+
+    return (event === undefined) ? (
+        <div>Loading...</div>
+    ) : (
         <div>
-            <EventBody user={props.user} event={props.event} />
+            <EventBody user={props.user} event={event} />
         </div>
     );
 }
 
 
 function EventBody(props: {user: User, event: Event}) {
+    // const [event, setEvent] = useState<Event>(props.event);
+
+    // useEffect(() => {
+    //     setEvent(event);
+    // }, [props.event]);
+
+    // console.log(event)
+
     return (
         <div>
             <div>
                 <EventBanner event={props.event} />
             </div>
             <div>
-                <header>{props.event.name}</header>
+                <header>{props.event.eventname}</header>
                 <EventDescription event={props.event} />
             </div>
             <br/>
@@ -45,9 +71,7 @@ function EventBody(props: {user: User, event: Event}) {
 function EventBanner(props: {event: Event}) {
     return (
         <div className="event-banner">
-            <image>
-                Image Placeholder
-            </image>
+            <a><img alt="Image Placeholder"></img></a>
         </div>
     );
 }
@@ -106,6 +130,7 @@ function EventGuestsTable(props: { event: Event }) {
     guests.forEach(e => {
         rows.push(
             <EventGuestsRow
+                key={e.user_id}
                 user_id={e.user_id}
                 username={e.username}
                 response={e.response}
@@ -116,8 +141,8 @@ function EventGuestsTable(props: { event: Event }) {
     return (
         <table align="center">
             <thead>
-                <th>Username</th>
-                <th>Reseponse</th>
+                <tr><th>Username</th></tr>
+                <tr><th>Reseponse</th></tr>
             </thead>
             <tbody>{rows}</tbody>
         </table>
@@ -126,6 +151,7 @@ function EventGuestsTable(props: { event: Event }) {
 
 
 function EventGuestsRow(props: {
+    key: number,
     user_id: number,
     username: string,
     response: string

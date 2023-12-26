@@ -10,9 +10,10 @@ interface Users extends Array<User>{};
 
 interface Event {
   event_id: number;
-  name: string;
-  users: Users;
+  eventname: string;
+  subscribedusers: Users;
   description: string;
+  live: boolean;
 }
 
 

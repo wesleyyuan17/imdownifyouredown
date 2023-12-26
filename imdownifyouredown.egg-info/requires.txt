@@ -1,0 +1,5 @@
+fastapi
+pysqlite3
+pytest
+httpx
+uvicorn

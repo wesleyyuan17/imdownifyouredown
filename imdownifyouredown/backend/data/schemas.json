@@ -4,6 +4,7 @@
             {"name": "eventid", "type": "int"},
             {"name": "eventname", "type": "str"},
             {"name": "subscribedusers", "type": "list[int]"},
+            {"name": "description", "type": "str"},
             {"name": "live", "type": "bool"}
         ],
         "primary_key": ["eventid"]

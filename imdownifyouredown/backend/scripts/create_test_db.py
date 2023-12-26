@@ -15,16 +15,16 @@ if __name__ == "__main__":
     conn.execute("DROP TABLE IF EXISTS UserInfo")
     conn.execute("DROP TABLE IF EXISTS UserPublicResponse")
     conn.execute("DROP TABLE IF EXISTS UserPrivateResponse")
-    conn.execute("CREATE TABLE IF NOT EXISTS Events(eventid PRIMARY KEY, eventname, users json, live)")
+    conn.execute("CREATE TABLE IF NOT EXISTS Events(eventid PRIMARY KEY, eventname, users json, description, live)")
     conn.execute("CREATE TABLE IF NOT EXISTS UserInfo(userid PRIMARY KEY, username, currentevents json, numpastevents)")
     conn.execute("CREATE TABLE IF NOT EXISTS UserPublicResponse(eventid, userid, down, PRIMARY KEY (eventid, userid))")
     conn.execute("CREATE TABLE IF NOT EXISTS UserPrivateResponse(eventid, userid, down, PRIMARY KEY (eventid, userid))")
     conn.executemany(
-        "INSERT INTO Events VALUES (?, ?, ?, ?)",
+        "INSERT INTO Events VALUES (?, ?, ?, ?, ?)",
         [
-            (1, 'test1', [1, 2, 3], True),
-            (2, 'test2', [1, 2], False),
-            (3, 'test3', [1, 2, 3, 4], True)
+            (1, 'test1', [1, 2, 3], "Test event 1", True),
+            (2, 'test2', [1, 2], "Test event 2", False),
+            (3, 'test3', [1, 2, 3, 4], "Test event 3", True)
         ]
     )
     conn.executemany(

@@ -1,6 +1,7 @@
 from typing import Any
 
 from imdownifyouredown.backend.crud.util import (
+    TABLE_SCHEMAS,
     Event,
     EventResponse,
     get_conn
@@ -25,12 +26,14 @@ def get_event(
         raise TypeError(f"Unknown type for event: {type(event)}")
     
     with get_conn(db_name, read_only=True) as conn:
-        return conn.execute(
+        result = conn.execute(
             "SELECT * FROM {} WHERE eventid = {}".format(
                 config.events_table,
                 event_id
             )
         ).fetchall()
+        assert len(result) == 1
+        return dict(zip(TABLE_SCHEMAS[config.events_table], result[0]))
 
 
 def insert_event(

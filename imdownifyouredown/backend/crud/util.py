@@ -9,6 +9,12 @@ from enum import Enum
 from imdownifyouredown.backend.db.config import config
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
+TABLE_SCHEMAS = json.load(open(os.path.join(config.data_dir, "schemas.json"), "r"))
+TABLE_SCHEMAS = {
+    t: [f["name"] for f in params["fields"]]
+    for t, params in TABLE_SCHEMAS.items()
+}
+
 
 
 class EventResponse(Enum):

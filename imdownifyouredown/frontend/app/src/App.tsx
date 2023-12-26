@@ -8,12 +8,12 @@ import { EventPage } from './components/EventPage';
 
 const App: React.FC = () => {
   const user: User = { user_id: 1, username: "User" };
-  const event: Event = {
-    event_id: 1,
-    name: "TestEvent",
-    users: [user, user],
-    description: "This is a test event"
-  }
+  // const event: Event = {
+  //   event_id: 1,
+  //   name: "TestEvent",
+  //   users: [user, user],
+  //   description: "This is a test event"
+  // }
   return (
     <Router>
       <div>
@@ -23,7 +23,7 @@ const App: React.FC = () => {
         {/* Use Routes to render only the first matching Route */}
         <Routes>
           <Route path="/home" element={<HomePage />} />
-          <Route path="/events" element={<EventPage user={user} event={event} />} />
+          <Route path="/events" element={<EventPage user={user} />} />
           {/* <Route path="/user" component={UserPage} /> */}
 
           {/* Redirect to the home page if no route matches */}
