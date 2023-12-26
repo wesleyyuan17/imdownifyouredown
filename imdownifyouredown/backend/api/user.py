@@ -17,12 +17,12 @@ class UserAction:
     user: User
 
 
-@router.get("/users/{user_id}")
+@router.get("/users")
 def get_user(user_id: int):
     return get_user(user_id)
 
 
-@router.get("/users/edit/")
+@router.get("/users/edit")
 def edit_user(action: UserAction):
     if action.action == Action.insert:
         insert_new_user(action.user)

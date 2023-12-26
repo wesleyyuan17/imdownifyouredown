@@ -1,7 +1,12 @@
+import { useSearchParams } from "react-router-dom";
+
 import { User, Event } from "./util"
 import "./customTypes.css"
 
 export function EventPage(props: {user: User, event: Event}) {
+    // const [searchParams, setSearchParams] = useSearchParams();
+    // const user: User = JSON.parse(searchParams.get("user") || "{}");
+    // const event: Event = JSON.parse(searchParams.get("event") || "{}");
     return (
         <div>
             <EventBody user={props.user} event={props.event} />
@@ -17,6 +22,7 @@ function EventBody(props: {user: User, event: Event}) {
                 <EventBanner event={props.event} />
             </div>
             <div>
+                <header>{props.event.name}</header>
                 <EventDescription event={props.event} />
             </div>
             <br/>
@@ -82,8 +88,6 @@ function UserPrivateResponse(props: {user: User, event: Event}) {
     return (
         <div>
             <span>Private Response: </span>
-            <button>Down</button>
-            <button>Maybe</button>
             <button>Not Down</button>
         </div>
     );

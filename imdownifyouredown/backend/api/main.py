@@ -1,8 +1,5 @@
-from fastapi import APIRouter
-
-router = APIRouter()
+import uvicorn
 
 
-@router.get("/")
-def root():
-    return "Welcome to I'm Down If You're Down"
+if __name__ == "__main__":
+    uvicorn.run("imdownifyouredown.backend.api:app", host="0.0.0.0", port=8000, reload=True)
